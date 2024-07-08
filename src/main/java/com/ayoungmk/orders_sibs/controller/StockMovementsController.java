@@ -2,6 +2,7 @@ package com.ayoungmk.orders_sibs.controller;
 
 import java.util.List;
 
+import com.ayoungmk.orders_sibs.model.dto.StockMovementDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ayoungmk.orders_sibs.exception.StockMovementsNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.StockMovementsDTO;
 import com.ayoungmk.orders_sibs.service.impl.StockMovementsServiceImpl;
 
 import jakarta.validation.Valid;
@@ -32,22 +32,22 @@ public class StockMovementsController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<StockMovementsDTO>> getAllStockMovements(){
+	public ResponseEntity<List<StockMovementDTO>> getAllStockMovements(){
 		return ResponseEntity.status(HttpStatus.OK).body(stockMovementsServiceImpl.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<StockMovementsDTO> getStockMovementsById(@PathVariable Long id) throws StockMovementsNotFoundException{
+	public ResponseEntity<StockMovementDTO> getStockMovementsById(@PathVariable Long id) throws StockMovementsNotFoundException{
 		return ResponseEntity.status(HttpStatus.OK).body(stockMovementsServiceImpl.findById(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<StockMovementsDTO> createStockMovements(@RequestBody @Valid StockMovementsDTO stockMovementDto){
+	public ResponseEntity<StockMovementDTO> createStockMovements(@RequestBody @Valid StockMovementDTO stockMovementDto){
 		return ResponseEntity.status(HttpStatus.CREATED).body(stockMovementsServiceImpl.save(stockMovementDto));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<StockMovementsDTO> updateStockMovements(@PathVariable Long id, @RequestBody StockMovementsDTO stockMovementDtoDetails){
+	public ResponseEntity<StockMovementDTO> updateStockMovements(@PathVariable Long id, @RequestBody StockMovementDTO stockMovementDtoDetails){
 		return ResponseEntity.status(HttpStatus.OK).body(stockMovementsServiceImpl.updateStockMovements(id, stockMovementDtoDetails));
 	}
 	

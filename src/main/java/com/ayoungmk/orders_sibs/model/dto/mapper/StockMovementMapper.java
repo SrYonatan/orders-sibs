@@ -3,30 +3,29 @@ package com.ayoungmk.orders_sibs.model.dto.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ayoungmk.orders_sibs.model.dto.StockMovementDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.ayoungmk.orders_sibs.model.dto.StockMovementsDTO;
 import com.ayoungmk.orders_sibs.model.entity.StockMovement;
 
 @Component
-public class StockMovementsMapper {
+public class StockMovementMapper {
 	
 	@Autowired
 	private ModelMapper mapper;
 	
-	public StockMovement toEntity(StockMovementsDTO dto) {
+	public StockMovement toEntity(StockMovementDTO dto) {
 		StockMovement entity = mapper.map(dto, StockMovement.class);
 		return entity;
 	}
 	
-	public StockMovementsDTO toDTO(StockMovement entity) {
-		StockMovementsDTO dto = mapper.map(entity, StockMovementsDTO.class);
+	public StockMovementDTO toDTO(StockMovement entity) {
+		StockMovementDTO dto = mapper.map(entity, StockMovementDTO.class);
 		return dto;
 	}
 	
-	public List<StockMovementsDTO> toDTO(List<StockMovement> stockMovements){
+	public List<StockMovementDTO> toDTO(List<StockMovement> stockMovements){
 		return stockMovements.stream()
 				.map(stockMovement -> toDTO(stockMovement))
 				.collect(Collectors.toList());

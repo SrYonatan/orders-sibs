@@ -2,6 +2,7 @@ package com.ayoungmk.orders_sibs.controller;
 
 import java.util.List;
 
+import com.ayoungmk.orders_sibs.model.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ayoungmk.orders_sibs.exception.OrdersNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.OrdersDTO;
 import com.ayoungmk.orders_sibs.service.impl.OrdersServiceImpl;
 
 import jakarta.validation.Valid;
@@ -33,22 +33,22 @@ public class OrdersController {
 	
 	
 	@GetMapping
-	public ResponseEntity<List<OrdersDTO>> getAllOrders(){
+	public ResponseEntity<List<OrderDTO>> getAllOrders(){
 		return ResponseEntity.status(HttpStatus.OK).body(ordersServiceImpl.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<OrdersDTO> getOrdersById(@PathVariable Long id) throws OrdersNotFoundException{
+	public ResponseEntity<OrderDTO> getOrdersById(@PathVariable Long id) throws OrdersNotFoundException{
 		return ResponseEntity.status(HttpStatus.OK).body(ordersServiceImpl.findById(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<OrdersDTO> saveOrder(@RequestBody @Valid OrdersDTO orderDto){
+	public ResponseEntity<OrderDTO> saveOrder(@RequestBody @Valid OrderDTO orderDto){
 		return ResponseEntity.status(HttpStatus.CREATED).body(ordersServiceImpl.createOrder(orderDto));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<OrdersDTO> updateOrders(@PathVariable Long id, @RequestBody OrdersDTO orderDtoDetails){
+	public ResponseEntity<OrderDTO> updateOrders(@PathVariable Long id, @RequestBody OrderDTO orderDtoDetails){
 		return ResponseEntity.status(HttpStatus.OK).body(ordersServiceImpl.updateOrders(id, orderDtoDetails));
 	}
 	

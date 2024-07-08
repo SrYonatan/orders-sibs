@@ -3,13 +3,13 @@ package com.ayoungmk.orders_sibs.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import com.ayoungmk.orders_sibs.model.dto.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
 import com.ayoungmk.orders_sibs.exception.UsersNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.UsersDTO;
-import com.ayoungmk.orders_sibs.model.dto.mapper.UsersMapper;
+import com.ayoungmk.orders_sibs.model.dto.UserDTO;
 import com.ayoungmk.orders_sibs.model.entity.User;
 import com.ayoungmk.orders_sibs.repository.UsersRepository;
 import com.ayoungmk.orders_sibs.service.UsersService;
@@ -20,28 +20,28 @@ public class UsersServiceImpl implements UsersService {
 	@Autowired
 	private UsersRepository usersRepository;
 	@Autowired
-	private UsersMapper usersMapper;
+	private UserMapper usersMapper;
 	
-	public List<UsersDTO> findAll(){
+	public List<UserDTO> findAll(){
 		List<User> users = usersRepository.findAll();
-		List<UsersDTO> usersDto = usersMapper.toDTO(users);
-		return usersDto;
+		List<UserDTO> UserDTO = usersMapper.toDTO(users);
+		return UserDTO;
 	}
 	
-	public UsersDTO findById(Long id) throws UsersNotFoundException{
+	public UserDTO findById(Long id) throws UsersNotFoundException{
 		Optional<User> user = usersRepository.findById(id);
 		if(user.isPresent()) {
-			UsersDTO userDto = usersMapper.toDTO(user.get());
+			UserDTO userDto = usersMapper.toDTO(user.get());
 			return userDto;
 		}else {
 			throw new ItensNotFoundException("User with id " + id + " not found!");
 		}
 	}
 	
-	public UsersDTO save(UsersDTO userDto) {
+	public UserDTO save(UserDTO userDto) {
 		User user = usersMapper.toEntity(userDto);
 		User createdUser = usersRepository.save(user);
-		UsersDTO userResponseDto = usersMapper.toDTO(createdUser);
+		UserDTO userResponseDto = usersMapper.toDTO(createdUser);
 		return userResponseDto;
 	}
 	
@@ -55,14 +55,14 @@ public class UsersServiceImpl implements UsersService {
 		}
 	}
 
-	public UsersDTO updateUsers(Long id, UsersDTO userDtoDetails) throws UsersNotFoundException{
+	public UserDTO updateUsers(Long id, UserDTO userDtoDetails) throws UsersNotFoundException{
 		Optional<User> userOpt = usersRepository.findById(id);
 		if(userOpt.isPresent()) {
 			User user = userOpt.get();
 			user.setName(userDtoDetails.getName());
 			user.setEmail(userDtoDetails.getEmail());
 			usersRepository.save(user);
-			UsersDTO userDto = usersMapper.toDTO(user);
+			UserDTO userDto = usersMapper.toDTO(user);
 			return userDto;
 		}else {
 			throw new ItensNotFoundException("User with id " + id + " not found!");

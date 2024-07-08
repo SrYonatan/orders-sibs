@@ -2,6 +2,7 @@ package com.ayoungmk.orders_sibs.controller;
 
 import java.util.List;
 
+import com.ayoungmk.orders_sibs.model.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ayoungmk.orders_sibs.exception.UsersNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.UsersDTO;
 import com.ayoungmk.orders_sibs.service.impl.UsersServiceImpl;
 
 import jakarta.validation.Valid;
@@ -32,22 +32,22 @@ public class UsersController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<UsersDTO>> getAllUsers(){
+	public ResponseEntity<List<UserDTO>> getAllUsers(){
 		return ResponseEntity.status(HttpStatus.OK).body(usersServiceImpl.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<UsersDTO> getUsersById(@PathVariable Long id) throws UsersNotFoundException{
+	public ResponseEntity<UserDTO> getUsersById(@PathVariable Long id) throws UsersNotFoundException{
 		return ResponseEntity.status(HttpStatus.OK).body(usersServiceImpl.findById(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<UsersDTO> createUsers(@RequestBody @Valid UsersDTO userDto){
+	public ResponseEntity<UserDTO> createUsers(@RequestBody @Valid UserDTO userDto){
 		return ResponseEntity.status(HttpStatus.CREATED).body(usersServiceImpl.save(userDto));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<UsersDTO> updateUsers(@PathVariable Long id, @RequestBody UsersDTO userDtoDetails){
+	public ResponseEntity<UserDTO> updateUsers(@PathVariable Long id, @RequestBody UserDTO userDtoDetails){
 		return ResponseEntity.status(HttpStatus.OK).body(usersServiceImpl.updateUsers(id, userDtoDetails));
 	}
 	

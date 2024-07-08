@@ -1,11 +1,10 @@
 package com.ayoungmk.orders_sibs.service.impl;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-
-
+import com.ayoungmk.orders_sibs.model.dto.OrderDTO;
+import com.ayoungmk.orders_sibs.model.dto.mapper.OrderMapper;
 import com.ayoungmk.orders_sibs.model.entity.Item;
 import com.ayoungmk.orders_sibs.model.entity.StockMovement;
 import com.ayoungmk.orders_sibs.model.entity.User;
@@ -18,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
 import com.ayoungmk.orders_sibs.exception.OrdersNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.OrdersDTO;
-import com.ayoungmk.orders_sibs.model.dto.mapper.OrdersMapper;
 import com.ayoungmk.orders_sibs.model.entity.Order;
 import com.ayoungmk.orders_sibs.model.entity.Stock;
 import com.ayoungmk.orders_sibs.repository.OrdersRepository;
@@ -32,7 +29,7 @@ public class OrdersServiceImpl implements OrdersService {
 	@Autowired
 	private OrdersRepository ordersRepository;
 	@Autowired
-	private OrdersMapper ordersMapper;
+	private OrderMapper ordersMapper;
 
 	@Autowired
 	private UsersRepository usersRepository;
@@ -50,11 +47,11 @@ public class OrdersServiceImpl implements OrdersService {
 	private ItemRepository itemRepository;
 
 
-	public List<OrdersDTO> findAll(){
+	public List<OrderDTO> findAll(){
 		return ordersMapper.toDTO( ordersRepository.findAll());
 	}
 
-	public OrdersDTO findById(Long id) throws OrdersNotFoundException{
+	public OrderDTO findById(Long id) throws OrdersNotFoundException{
 		Optional<Order> order = ordersRepository.findById(id);
 		if(order.isPresent()) {
 			return ordersMapper.toDTO(order.get());
@@ -68,7 +65,7 @@ public class OrdersServiceImpl implements OrdersService {
 		ordersRepository.deleteById(id);
 	}
 
-	public OrdersDTO updateOrders(Long id, OrdersDTO orderDtoDetails) throws OrdersNotFoundException{
+	public OrderDTO updateOrders(Long id, OrderDTO orderDtoDetails) throws OrdersNotFoundException{
 		Optional<Order> orderOpt = ordersRepository.findById(id);
 		if(orderOpt.isPresent()) {
 			Order order = orderOpt.get();
@@ -81,7 +78,7 @@ public class OrdersServiceImpl implements OrdersService {
 		}
 	}
 
-	public OrdersDTO createOrder(OrdersDTO orderDto) {
+	public OrderDTO createOrder(OrderDTO orderDto) {
 		Item item = itemRepository.findByName(orderDto.getItemName());
 		Stock stock = stockRepository.findByItem(item);
 		User user = usersRepository.findByName(orderDto.getUserName());

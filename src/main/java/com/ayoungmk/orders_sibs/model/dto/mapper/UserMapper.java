@@ -3,30 +3,30 @@ package com.ayoungmk.orders_sibs.model.dto.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ayoungmk.orders_sibs.model.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.ayoungmk.orders_sibs.model.dto.UsersDTO;
 import com.ayoungmk.orders_sibs.model.entity.User;
 
 @Component
-public class UsersMapper {
+public class UserMapper {
 	
+
 	@Autowired
 	private ModelMapper mapper;
 	
-	public User toEntity(UsersDTO dto) {
+	public User toEntity(UserDTO dto) {
 		User entity = mapper.map(dto, User.class);
 		return entity;
 	}
 	
-	public UsersDTO toDTO(User entity) {
-		UsersDTO dto = mapper.map(entity, UsersDTO.class);
+	public UserDTO toDTO(User entity) {
+		UserDTO dto = mapper.map(entity, UserDTO.class);
 		return dto;
 	}
 	
-	public List<UsersDTO> toDTO(List<User> users){
+	public List<UserDTO> toDTO(List<User> users){
 		return users.stream()
 				.map(user -> toDTO(user))
 				.collect(Collectors.toList());

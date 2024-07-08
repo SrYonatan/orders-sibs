@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ayoungmk.orders_sibs.model.dto.ItemDTO;
+import com.ayoungmk.orders_sibs.model.dto.mapper.ItemMapper;
 import com.ayoungmk.orders_sibs.model.entity.Item;
 import com.ayoungmk.orders_sibs.repository.ItemRepository;
 import com.ayoungmk.orders_sibs.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.mapper.ItensMapper;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -19,7 +19,7 @@ public class ItemServiceImpl implements ItemService {
 	private ItemRepository itemRepository;
 
 	@Autowired
-	private ItensMapper itensMapper;
+	private ItemMapper itensMapper;
 	
 	public List<ItemDTO> findAll(){
 		return itensMapper.toDTO(itemRepository.findAll());

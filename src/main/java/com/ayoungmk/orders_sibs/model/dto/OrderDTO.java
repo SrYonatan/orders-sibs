@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrdersDTO {
+public class OrderDTO {
 
 	private String itemName;
 	private Long quantity;
