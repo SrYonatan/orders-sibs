@@ -25,8 +25,9 @@ import jakarta.validation.Valid;
 public class UsersController {
 
 	private UsersServiceImpl usersServiceImpl;
-	
-	public UsersController (@Autowired UsersServiceImpl usersServiceImpl) {
+
+	@Autowired
+	public UsersController (UsersServiceImpl usersServiceImpl) {
 		this.usersServiceImpl = usersServiceImpl;
 	}
 	

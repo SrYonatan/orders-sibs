@@ -9,7 +9,8 @@ public interface OrdersService {
 	
 	public List<OrdersDTO> findAll();
 	public OrdersDTO findById(Long id) throws OrdersNotFoundException;
-	public OrdersDTO save(OrdersDTO orderDto);
+
+	public OrdersDTO createOrder(OrdersDTO orderDto);
 	public OrdersDTO updateOrders(Long id, OrdersDTO orderDtoDetails) throws OrdersNotFoundException;
 	public void deleteById(Long id) throws OrdersNotFoundException;
 }

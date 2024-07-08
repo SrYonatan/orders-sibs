@@ -25,8 +25,9 @@ import jakarta.validation.Valid;
 public class StockMovementsController {
 	
 	private StockMovementsServiceImpl stockMovementsServiceImpl;
-	
-	public StockMovementsController (@Autowired StockMovementsServiceImpl stockMovementsServiceImpl) {
+
+	@Autowired
+	public StockMovementsController (StockMovementsServiceImpl stockMovementsServiceImpl) {
 		this.stockMovementsServiceImpl = stockMovementsServiceImpl;
 	}
 	

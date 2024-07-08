@@ -1,132 +1,112 @@
 package com.ayoungmk.orders_sibs.service.impl;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+
+import com.ayoungmk.orders_sibs.model.entity.Item;
+import com.ayoungmk.orders_sibs.model.entity.StockMovement;
+import com.ayoungmk.orders_sibs.model.entity.User;
+import com.ayoungmk.orders_sibs.model.enums.StatusOrder;
+import com.ayoungmk.orders_sibs.repository.ItemRepository;
+import com.ayoungmk.orders_sibs.repository.StockMovementsRepository;
+import com.ayoungmk.orders_sibs.repository.UsersRepository;
+import com.ayoungmk.orders_sibs.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
 import com.ayoungmk.orders_sibs.exception.OrdersNotFoundException;
 import com.ayoungmk.orders_sibs.model.dto.OrdersDTO;
-import com.ayoungmk.orders_sibs.model.dto.StockDTO;
-import com.ayoungmk.orders_sibs.model.dto.StockMovementsDTO;
 import com.ayoungmk.orders_sibs.model.dto.mapper.OrdersMapper;
-import com.ayoungmk.orders_sibs.model.entity.Itens;
-import com.ayoungmk.orders_sibs.model.entity.Orders;
+import com.ayoungmk.orders_sibs.model.entity.Order;
 import com.ayoungmk.orders_sibs.model.entity.Stock;
-import com.ayoungmk.orders_sibs.repository.ItensRepository;
 import com.ayoungmk.orders_sibs.repository.OrdersRepository;
 import com.ayoungmk.orders_sibs.repository.StockRepository;
 import com.ayoungmk.orders_sibs.service.OrdersService;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
-	
+
 	@Autowired
 	private OrdersRepository ordersRepository;
 	@Autowired
 	private OrdersMapper ordersMapper;
+
 	@Autowired
-	private StockServiceImpl stockServiceImpl;
-	@Autowired
-	private StockMovementsServiceImpl stockMovementsServiceImpl;
-	
+	private UsersRepository usersRepository;
+
 	@Autowired
 	private StockRepository stockRepository;
 
 	@Autowired
-	private ItensRepository itensRepository;
+	private StockMovementsRepository stockMovementsServiceImpl;
 
-	
+	private EmailService emailServiceImpl;
+
+
+	@Autowired
+	private ItemRepository itemRepository;
+
+
 	public List<OrdersDTO> findAll(){
-		List<Orders> orders = ordersRepository.findAll();
-		List<OrdersDTO> ordersDto = ordersMapper.toDTO(orders);
-		return ordersDto;
+		return ordersMapper.toDTO( ordersRepository.findAll());
 	}
-	
+
 	public OrdersDTO findById(Long id) throws OrdersNotFoundException{
-		Optional<Orders> order = ordersRepository.findById(id);
+		Optional<Order> order = ordersRepository.findById(id);
 		if(order.isPresent()) {
-			OrdersDTO orderDto = ordersMapper.toDTO(order.get());
-			return orderDto;
+			return ordersMapper.toDTO(order.get());
 		}else {
 			throw new ItensNotFoundException("Order with id " + id + " not found!");
 		}
 	}
-	
-	public OrdersDTO save(OrdersDTO orderDto) {
-		Orders order = ordersMapper.toEntity(orderDto);
-		Orders createdorder = ordersRepository.save(order);
-		OrdersDTO orderResponseDto = ordersMapper.toDTO(createdorder);
-		return orderResponseDto;
-	}
-	
+
+
 	public void deleteById(Long id) throws OrdersNotFoundException {
-		Optional<Orders> orderOpt = ordersRepository.findById(id);
-		if(orderOpt.isPresent()) {
-			Orders order = orderOpt.get();
-			ordersRepository.delete(order);
-		}else {
-			throw new ItensNotFoundException("Order with id " + id + " not found!");
-		}
+		ordersRepository.deleteById(id);
 	}
 
 	public OrdersDTO updateOrders(Long id, OrdersDTO orderDtoDetails) throws OrdersNotFoundException{
-		Optional<Orders> orderOpt = ordersRepository.findById(id);
+		Optional<Order> orderOpt = ordersRepository.findById(id);
 		if(orderOpt.isPresent()) {
-			Orders order = orderOpt.get();
-			order.setItem(orderDtoDetails.getItem());
+			Order order = orderOpt.get();
+			order.getItemId().setName(orderDtoDetails.getItemName());
 			order.setQuantity(orderDtoDetails.getQuantity());
-			order.setUser(orderDtoDetails.getUser());
-			order.setStatus(orderDtoDetails.getStatus());
 			ordersRepository.save(order);
-			OrdersDTO orderDto = ordersMapper.toDTO(order);
-			return orderDto;
+			return orderDtoDetails;
 		}else {
 			throw new ItensNotFoundException("Order with id " + id + " not found!");
 		}
 	}
-	
+
 	public OrdersDTO createOrder(OrdersDTO orderDto) {
-		Itens item = itensRepository.findByName(orderDto.getItemName());
-	
-		Stock stock = stockRepository.findByItem(item.getId());
-		
-		order.setStatus("Incomplete");
-		order.setCreationDate("21/06/2024"); //Criar método pra pegar o current timestamp
-	
-		this.verifyStock(order, orderDto, stock);
-		if ("Complete".equals(order.getStatus())) { //when an order is created, it should try to satisfy it with the current stock. ?
-			StockMovementsDTO stockMovementDto = new StockMovementsDTO("21/06/2024", order.getItem(), (-order.getQuantity()));
-			stockMovementsServiceImpl.save(stockMovementDto); //criar stock movement
-			
-			
-			StockDTO stockDtoDetails = new StockDTO(order.getItem(), this.newQuantity(stockDto, order));
-			stockServiceImpl.updateStock(stockServiceImpl.findIdbyItens(order.getItem()), stockDtoDetails);             //Update stock
-			
-			
-			this.sendEmail(); //mandar email
+		Item item = itemRepository.findByName(orderDto.getItemName());
+		Stock stock = stockRepository.findByItem(item);
+		User user = usersRepository.findByName(orderDto.getUserName());
+		Order order = new Order();
+		order.setCreationDate(new Timestamp(System.currentTimeMillis()));
+		order.setItemId(item);
+		order.setUserId(user);
+		order.setQuantity(orderDto.getQuantity());
+		this.assignStatusOrder(order,stock,orderDto.getQuantity(),item);
+		ordersRepository.save(order);
+		return orderDto;
+	}
+
+	private void assignStatusOrder(Order order, Stock stock,Long quantity,Item item) {
+		if (quantity <= stock.getQuantity()) {
+			stockMovementsServiceImpl.save(StockMovement.builder().item(item).quantity(-order.getQuantity()).build());
+			stock.setQuantity(stock.getQuantity() - order.getQuantity());
+			stockRepository.save(stock);
+			//configurar para fazer o send correto
+			emailServiceImpl.sendSimpleMessage("to", "subject", "String text");
+			order.setStatus(StatusOrder.COMPLETE.toString());
+		} else {
+			order.setStatus(StatusOrder.INCOMPLETE.toString());
 		}
-		return save(orderDto);
 	}
 
 
-	private Integer newQuantity(List<StockDTO> stockDto, Orders order) {
-		Integer stockQuantity = stockDto.get(Math.toIntExact(stockServiceImpl.findIdbyItens(order.getItem()))).getQuantity();
-		Integer newQuantity = stockQuantity - order.getQuantity();
-		return newQuantity;
-	}
-
-	private void verifyStock(Orders order, OrdersDTO orderDto, List<Stock> stock) {
-		if (orderDto.getQuantity() <= stock.get(0).getQuantity()) {
-			order.setStatus("Complete");
-		}
-		
-	}
-	
-	private void sendEmail() {
-		// TODO Auto-generated method stub
-		
-	}
 }

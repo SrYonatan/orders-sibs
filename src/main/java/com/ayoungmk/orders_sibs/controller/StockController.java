@@ -26,7 +26,8 @@ public class StockController {
 	
 	private StockServiceImpl stockServiceImpl;
 
-	public StockController (@Autowired StockServiceImpl stockServiceImpl) {
+	@Autowired
+	public StockController (StockServiceImpl stockServiceImpl) {
 		this.stockServiceImpl = stockServiceImpl;
 	}
 	

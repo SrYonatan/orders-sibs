@@ -10,7 +10,7 @@ import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
 import com.ayoungmk.orders_sibs.exception.StockMovementsNotFoundException;
 import com.ayoungmk.orders_sibs.model.dto.StockMovementsDTO;
 import com.ayoungmk.orders_sibs.model.dto.mapper.StockMovementsMapper;
-import com.ayoungmk.orders_sibs.model.entity.StockMovements;
+import com.ayoungmk.orders_sibs.model.entity.StockMovement;
 import com.ayoungmk.orders_sibs.repository.StockMovementsRepository;
 import com.ayoungmk.orders_sibs.service.StockMovementsService;
 
@@ -21,15 +21,15 @@ public class StockMovementsServiceImpl implements StockMovementsService {
 	private StockMovementsRepository stockMovementsRepository;
 	@Autowired
 	private StockMovementsMapper stockMovementsMapper;
-	
+
 	public List<StockMovementsDTO> findAll(){
-		List<StockMovements> stockMovements = stockMovementsRepository.findAll();
+		List<StockMovement> stockMovements = stockMovementsRepository.findAll();
 		List<StockMovementsDTO> stockMovementsDto = stockMovementsMapper.toDTO(stockMovements);
 		return stockMovementsDto;
 	}
-	
+
 	public StockMovementsDTO findById(Long id) throws StockMovementsNotFoundException {
-		Optional<StockMovements> stockMovements = stockMovementsRepository.findById(id);
+		Optional<StockMovement> stockMovements = stockMovementsRepository.findById(id);
 		if(stockMovements.isPresent()) {
 			StockMovementsDTO stockMovementDto = stockMovementsMapper.toDTO(stockMovements.get());
 			return stockMovementDto;
@@ -37,19 +37,17 @@ public class StockMovementsServiceImpl implements StockMovementsService {
 			throw new ItensNotFoundException("Stock Movement with id " + id + " not found!");
 		}
 	}
-	
+
+	@Override
 	public StockMovementsDTO save(StockMovementsDTO stockMovementDto) {
-//		when a stock movement is created, the system should try to attribute it to an order that isn't complete
-		StockMovements stockMovement = stockMovementsMapper.toEntity(stockMovementDto);
-		StockMovements createdstockMovement = stockMovementsRepository.save(stockMovement);
-		StockMovementsDTO stockMovementResponseDto = stockMovementsMapper.toDTO(createdstockMovement);
-		return stockMovementResponseDto;
+		return null;
 	}
-	
+
+
 	public void deleteById(Long id) throws StockMovementsNotFoundException {
-		Optional<StockMovements> stockMovementsOpt = stockMovementsRepository.findById(id);
+		Optional<StockMovement> stockMovementsOpt = stockMovementsRepository.findById(id);
 		if(stockMovementsOpt.isPresent()) {
-			StockMovements stockMovement = stockMovementsOpt.get();
+			StockMovement stockMovement = stockMovementsOpt.get();
 			stockMovementsRepository.delete(stockMovement);
 		}else {
 			throw new ItensNotFoundException("Stock Movement with id " + id + " not found!");
@@ -57,10 +55,10 @@ public class StockMovementsServiceImpl implements StockMovementsService {
 	}
 
 	public StockMovementsDTO updateStockMovements(Long id, StockMovementsDTO stockMovementsDtoDetails) throws StockMovementsNotFoundException {
-		Optional<StockMovements> stockMovementsOpt = stockMovementsRepository.findById(id);
+		Optional<StockMovement> stockMovementsOpt = stockMovementsRepository.findById(id);
 		if(stockMovementsOpt.isPresent()) {
-			StockMovements stockMovement = stockMovementsOpt.get();
-			stockMovement.setItem(stockMovementsDtoDetails.getItem());
+			StockMovement stockMovement = stockMovementsOpt.get();
+//			stockMovement.setItem(stockMovementsDtoDetails.getItem());
 			stockMovement.setQuantity(stockMovementsDtoDetails.getQuantity());
 			stockMovementsRepository.save(stockMovement);
 			StockMovementsDTO stockMovementDto = stockMovementsMapper.toDTO(stockMovement);

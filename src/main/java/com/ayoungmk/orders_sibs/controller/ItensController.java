@@ -2,6 +2,10 @@ package com.ayoungmk.orders_sibs.controller;
 
 import java.util.List;
 
+import com.ayoungmk.orders_sibs.model.dto.ItemDTO;
+import com.ayoungmk.orders_sibs.service.impl.ItemServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,46 +17,47 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ayoungmk.orders_sibs.exception.ItensNotFoundException;
-import com.ayoungmk.orders_sibs.model.dto.ItensDTO;
-import com.ayoungmk.orders_sibs.service.impl.ItensServiceImpl;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/orderSibs/v1/itens")
 public class ItensController {
+
+	Logger logger = LoggerFactory.getLogger(ItensController.class);
 	
-	private ItensServiceImpl itensServiceImpl;
-	
-	public ItensController (@Autowired ItensServiceImpl itensServiceImpl) {
-		this.itensServiceImpl = itensServiceImpl;
+	private ItemServiceImpl itemServiceImpl;
+
+	@Autowired
+	public ItensController (ItemServiceImpl itensServiceImpl) {
+		this.itemServiceImpl = itensServiceImpl;
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<ItensDTO>> getAllItens(){
-		return ResponseEntity.status(HttpStatus.OK).body(itensServiceImpl.findAll());
+	public ResponseEntity<List<ItemDTO>> getAllItens(){
+		logger.info("Testosterone");
+		return ResponseEntity.status(HttpStatus.OK).body(itemServiceImpl.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<ItensDTO> getItensById(@PathVariable Long id) throws ItensNotFoundException{
-		return ResponseEntity.status(HttpStatus.OK).body(itensServiceImpl.findById(id));
+	public ResponseEntity<ItemDTO> getItensById(@PathVariable Long id) throws ItensNotFoundException{
+		return ResponseEntity.status(HttpStatus.OK).body(itemServiceImpl.findById(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<ItensDTO> createItens(@RequestBody @Valid ItensDTO itemDto){
-		return ResponseEntity.status(HttpStatus.CREATED).body(itensServiceImpl.save(itemDto));
+	public ResponseEntity<ItemDTO> createItens(@RequestBody @Valid ItemDTO itemDto){
+		return ResponseEntity.status(HttpStatus.CREATED).body(itemServiceImpl.save(itemDto));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<ItensDTO> updateItens(@PathVariable Long id, @RequestBody ItensDTO itemDtoDetails){
-		return ResponseEntity.status(HttpStatus.OK).body(itensServiceImpl.updateItens(id, itemDtoDetails));
+	public ResponseEntity<ItemDTO> updateItens(@PathVariable Long id, @RequestBody ItemDTO itemDtoDetails){
+		return ResponseEntity.status(HttpStatus.OK).body(itemServiceImpl.updateItens(id, itemDtoDetails));
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteItens(@PathVariable Long id){
-		itensServiceImpl.deleteById(id);
-		return ResponseEntity.status(HttpStatus.OK).body("Removed successfully!");
+		itemServiceImpl.deleteById(id);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Removed successfully!");
 	}
 }

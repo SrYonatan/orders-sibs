@@ -44,7 +44,7 @@ public class OrdersController {
 	
 	@PostMapping
 	public ResponseEntity<OrdersDTO> saveOrder(@RequestBody @Valid OrdersDTO orderDto){
-		return ResponseEntity.status(HttpStatus.CREATED).body(ordersServiceImpl.save(orderDto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(ordersServiceImpl.createOrder(orderDto));
 	}
 	
 	@PutMapping("/{id}")
@@ -57,9 +57,4 @@ public class OrdersController {
 			ordersServiceImpl.deleteById(id);
 			return ResponseEntity.status(HttpStatus.OK).body("Removed successfully!");
 	}
-	
-//	@PostMapping
-//	public ResponseEntity<OrdersDTO> createOrder(@RequestBody @Valid OrdersDTO orderDto){
-//		return ResponseEntity.status(HttpStatus.CREATED).body(ordersServiceImpl.save(orderDto));
-//	}
 }

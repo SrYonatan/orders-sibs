@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ayoungmk.orders_sibs.model.dto.OrdersDTO;
-import com.ayoungmk.orders_sibs.model.entity.Orders;
+import com.ayoungmk.orders_sibs.model.entity.Order;
 
 @Component
 public class OrdersMapper {
@@ -16,17 +16,17 @@ public class OrdersMapper {
 	@Autowired
 	private ModelMapper mapper;
 	
-	public Orders toEntity(OrdersDTO dto) {
-		Orders entity = mapper.map(dto, Orders.class);
+	public Order toEntity(OrdersDTO dto) {
+		Order entity = mapper.map(dto, Order.class);
 		return entity;
 	}
 	
-	public OrdersDTO toDTO(Orders entity) {
+	public OrdersDTO toDTO(Order entity) {
 		OrdersDTO dto = mapper.map(entity, OrdersDTO.class);
 		return dto;
 	}
 	
-	public List<OrdersDTO> toDTO(List<Orders> orders){
+	public List<OrdersDTO> toDTO(List<Order> orders){
 		return orders.stream()
 				.map(order -> toDTO(order))
 				.collect(Collectors.toList());

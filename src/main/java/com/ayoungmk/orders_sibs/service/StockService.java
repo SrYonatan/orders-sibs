@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.ayoungmk.orders_sibs.exception.StockNotFoundException;
 import com.ayoungmk.orders_sibs.model.dto.StockDTO;
-import com.ayoungmk.orders_sibs.model.entity.Itens;
+import com.ayoungmk.orders_sibs.model.entity.Item;
+
 
 public interface StockService {
 	
@@ -13,5 +14,5 @@ public interface StockService {
 	public StockDTO save(StockDTO stockDto);
 	public StockDTO updateStock(Long id, StockDTO stockDtoDetails) throws StockNotFoundException;
 	public void deleteById(Long id) throws StockNotFoundException;
-	public Long findIdbyItens(Itens item);
+	public Long findIdbyItens(Item item);
 }
